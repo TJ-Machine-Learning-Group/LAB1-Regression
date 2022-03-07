@@ -40,7 +40,7 @@ def regression(model,boston_data,boston_target,splits,size):
         print("average score(R^2):",score_all/splits)
 
 def main():
-    data_url = "./code/dataset/concrete/Concrete_Data.xls"
+    data_url = "./dataset/concrete/Concrete_Data.xls"
     raw_df = pd.read_excel(data_url)
     data = raw_df.values[:, :-1]
     print("data of boston:",data.shape)
