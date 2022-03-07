@@ -4,7 +4,6 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from sklearn.model_selection import cross_val_score, ShuffleSplit
 from sklearn import linear_model
-plt.switch_backend('agg')
 
 #回归函数
 def regression(model,boston_data,boston_target,splits,size):
