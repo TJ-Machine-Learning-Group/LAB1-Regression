@@ -31,7 +31,7 @@ def regression(model,boston_data,boston_target,splits,size):
             plt.plot(np.arange(len(result)), y_test,label='true value')
             plt.plot(np.arange(len(result)),result,label='predict value')
             plt.legend(loc='upper right')
-            #plt.show()
+            plt.show()
 
             print('fold {}/{},score(R^2)={}'.format(n_fold,splits,score))
             score_all += score
