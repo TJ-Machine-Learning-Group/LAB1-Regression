@@ -3,8 +3,11 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from sklearn.model_selection import cross_val_score, ShuffleSplit
-from sklearn import linear_model
-#plt.switch_backend('agg')
+from sklearn.linear_model import LinearRegression, Lasso, Ridge
+from sklearn.tree import DecisionTreeRegressor
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.neural_network import MLPRegressor
+from sklearn.preprocessing import StandardScaler
 
 #回归函数
 def regression(model,boston_data,boston_target,splits,size):
@@ -46,10 +49,34 @@ def main():
     print("data of boston:",data.shape)
     target = raw_df.values[:, -1]
     print("target of boston:",target.shape)
+
+    sc = StandardScaler()
+    data = sc.fit_transform(data)#将自变量归一化为标准正态分布
+
+
     #实例化线性回归模型
-    model_Linear = linear_model.LinearRegression()
-    #参数为5折验证，测试集占20%
-    regression(model_Linear,data,target,splits=5,size=0.2)
+    # Linear Regression
+    lr = LinearRegression()
+    # Lasso Regression
+    lasso = Lasso()
+    # Ridge Regression
+    ridge = Ridge()
+
+    # Decision Trees
+    dtr = DecisionTreeRegressor()
+    # Random Forest Regressor
+    rfr = RandomForestRegressor(n_estimators=100)
+    
+    # Multi-Layer Perceptron
+    mlp = MLPRegressor(hidden_layer_sizes=(100,70),max_iter=1800)
+
+    models = [lr, lasso, ridge, dtr, rfr,mlp]
+    names = ["Linear Regression", "Lasso Regression", "Ridge Regression", 
+         "Decision Tree Regressor", "Random Forest Regressor","Multi-Layer Perceptron Regressor"]
+    for i in range(len(models)):
+        #参数为5折验证，测试集占20%
+        print(names[i])
+        regression(mlp,data,target,splits=5,size=0.2)
 
 if __name__=='__main__':
     main()
