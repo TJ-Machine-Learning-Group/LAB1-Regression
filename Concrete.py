@@ -51,7 +51,7 @@ def main():
     print("target of boston:",target.shape)
 
     sc = StandardScaler()
-    data = sc.fit_transform(data)#将自变量归一化为标准正态分布
+    #data = sc.fit_transform(data)#将自变量归一化为标准正态分布
 
 
     #实例化线性回归模型
@@ -76,7 +76,7 @@ def main():
     for i in range(len(models)):
         #参数为5折验证，测试集占20%
         print(names[i])
-        regression(mlp,data,target,splits=5,size=0.2)
+        regression(models[i],data,target,splits=5,size=0.2)
 
 if __name__=='__main__':
     main()
