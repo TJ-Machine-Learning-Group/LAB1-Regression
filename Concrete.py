@@ -1,13 +1,17 @@
-import sklearn
-import numpy as np
+# -*- coding: utf-8 -*-
+"""
+Created on Mon Mar 21 16:27:22 2022
+
+@author: I
+"""
 import pandas as pd
-import matplotlib.pyplot as plt
-from sklearn.model_selection import cross_val_score, ShuffleSplit
+from sklearn.model_selection import ShuffleSplit
 from sklearn.linear_model import LinearRegression, Lasso, Ridge
 from sklearn.tree import DecisionTreeRegressor
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.neural_network import MLPRegressor
 from sklearn.preprocessing import StandardScaler
+from DecisionTreeRegressorHandWrite import *
 
 #回归函数
 def Regression(model,boston_data,boston_target,splits,size):
@@ -30,13 +34,6 @@ def Regression(model,boston_data,boston_target,splits,size):
             score = model.score(x_test, y_test)
             #测试
             result = model.predict(x_test)
-
-            #画图
-            #plt.plot(np.arange(len(result)), y_test,label='true value')
-            #plt.plot(np.arange(len(result)),result,label='predict value')
-            #plt.legend(loc='upper right')
-            #plt.show()
-
             print('fold {}/{},score(R^2)={}'.format(n_fold,splits,score))
             score_all += score
             n_fold += 1
@@ -66,6 +63,7 @@ def main(data_url):
 
     # Decision Trees
     dtr_skl = DecisionTreeRegressor()
+    dtr_handwriting = DecisionTreeRegressorHandWrite()
     # Random Forest Regressor
     rfr_skl = RandomForestRegressor(n_estimators=100)
     
@@ -73,9 +71,9 @@ def main(data_url):
     #mlp_skl = MLPRegressor(hidden_layer_sizes=(5,5),max_iter=10000)
     mlp_skl = MLPRegressor(hidden_layer_sizes=(100,70),max_iter=1800)
     
-    models = [lr_skl, lasso_skl, ridge_skl, dtr_skl, rfr_skl,mlp_skl]
+    models = [lr_skl, lasso_skl, ridge_skl, dtr_skl, dtr_handwriting, rfr_skl,mlp_skl]
     names = ["Linear Regression from sklearn", "Lasso Regression from sklearn", "Ridge Regression from sklearn", 
-         "Decision Tree Regressor from sklearn", "Random Forest Regressor from sklearn","Multi-Layer Perceptron Regressor from sklearn"]
+         "Decision Tree Regressor from sklearn", "Decision Tree Regressor writing by hand", "Random Forest Regressor from sklearn","Multi-Layer Perceptron Regressor from sklearn"]
     
     for i in range(len(models)):
         #参数为5折验证，测试集占20%
@@ -83,5 +81,5 @@ def main(data_url):
         Regression(models[i],data,target,splits=5,size=0.2)
 
 if __name__=='__main__':
-    url="./dataset/concrete/Concrete_Data.xls"
+    url="./Concrete_Data.xls"
     main(url)
