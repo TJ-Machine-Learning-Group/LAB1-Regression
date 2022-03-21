@@ -10,7 +10,7 @@ from sklearn.neural_network import MLPRegressor
 from sklearn.preprocessing import StandardScaler
 
 #回归函数
-def regression(model,boston_data,boston_target,splits,size):
+def Regression(model,boston_data,boston_target,splits,size):
    #n折交叉验证并打乱数据集顺序
         shuffle = ShuffleSplit(n_splits=splits, test_size=size, random_state=7)
         n_fold = 1
@@ -32,9 +32,9 @@ def regression(model,boston_data,boston_target,splits,size):
             result = model.predict(x_test)
 
             #画图
-            plt.plot(np.arange(len(result)), y_test,label='true value')
-            plt.plot(np.arange(len(result)),result,label='predict value')
-            plt.legend(loc='upper right')
+            #plt.plot(np.arange(len(result)), y_test,label='true value')
+            #plt.plot(np.arange(len(result)),result,label='predict value')
+            #plt.legend(loc='upper right')
             #plt.show()
 
             print('fold {}/{},score(R^2)={}'.format(n_fold,splits,score))
@@ -42,8 +42,7 @@ def regression(model,boston_data,boston_target,splits,size):
             n_fold += 1
         print("average score(R^2):",score_all/splits)
 
-def main():
-    data_url = "./dataset/concrete/Concrete_Data.xls"
+def Data_preprocessing(data_url):
     raw_df = pd.read_excel(data_url)
     data = raw_df.values[:, :-1]
     print("data of boston:",data.shape)
@@ -51,32 +50,38 @@ def main():
     print("target of boston:",target.shape)
 
     sc = StandardScaler()
-    #data = sc.fit_transform(data)#将自变量归一化为标准正态分布
+    data = sc.fit_transform(data)#将自变量归一化为标准正态分布,对神经网络影响极大
+    return data,target
 
+def main(data_url):
+    data,target=Data_preprocessing(data_url)
 
-    #实例化线性回归模型
+    #实例化sklearn回归模型
     # Linear Regression
-    lr = LinearRegression()
+    lr_skl = LinearRegression()
     # Lasso Regression
-    lasso = Lasso()
+    lasso_skl = Lasso()
     # Ridge Regression
-    ridge = Ridge()
+    ridge_skl = Ridge()
 
     # Decision Trees
-    dtr = DecisionTreeRegressor()
+    dtr_skl = DecisionTreeRegressor()
     # Random Forest Regressor
-    rfr = RandomForestRegressor(n_estimators=100)
+    rfr_skl = RandomForestRegressor(n_estimators=100)
     
     # Multi-Layer Perceptron
-    mlp = MLPRegressor(hidden_layer_sizes=(100,70),max_iter=1800)
-
-    models = [lr, lasso, ridge, dtr, rfr,mlp]
-    names = ["Linear Regression", "Lasso Regression", "Ridge Regression", 
-         "Decision Tree Regressor", "Random Forest Regressor","Multi-Layer Perceptron Regressor"]
+    #mlp_skl = MLPRegressor(hidden_layer_sizes=(5,5),max_iter=10000)
+    mlp_skl = MLPRegressor(hidden_layer_sizes=(100,70),max_iter=1800)
+    
+    models = [lr_skl, lasso_skl, ridge_skl, dtr_skl, rfr_skl,mlp_skl]
+    names = ["Linear Regression from sklearn", "Lasso Regression from sklearn", "Ridge Regression from sklearn", 
+         "Decision Tree Regressor from sklearn", "Random Forest Regressor from sklearn","Multi-Layer Perceptron Regressor from sklearn"]
+    
     for i in range(len(models)):
         #参数为5折验证，测试集占20%
         print(names[i])
-        regression(models[i],data,target,splits=5,size=0.2)
+        Regression(models[i],data,target,splits=5,size=0.2)
 
 if __name__=='__main__':
-    main()
+    url="./dataset/concrete/Concrete_Data.xls"
+    main(url)
