@@ -205,7 +205,7 @@ class DecisionTreeRegressorHandWrite:
 
         return node
 
-    def fit(self, data: ndarray, label: ndarray, max_depth=5, min_samples_split=2):
+    def fit(self, data: ndarray, label: ndarray, max_depth=12, min_samples_split=2):
         """Build a regression decision tree.
         Note:
             At least there's one column in data has more than 2 unique elements,
@@ -214,7 +214,7 @@ class DecisionTreeRegressorHandWrite:
             data {ndarray} -- Training data.
             label {ndarray} -- Target values.
         Keyword Arguments:
-            max_depth {int} -- The maximum depth of the tree. (default: {5})
+            max_depth {int} -- The maximum depth of the tree. (default: {12})
             min_samples_split {int} -- The minimum number of samples required
             to split an internal node. (default: {2})
         """
