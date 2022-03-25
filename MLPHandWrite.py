@@ -133,7 +133,7 @@ class MLPHandWrite(object):
 
         #第三种：传统方法（上课讲的方法）
         for i in range(1000):  # 10000次迭代
-            grad = self.gradient(self.theta,self.network_struct,self.reg_const,X, y_train) 
+            grad = gradient(self.theta,self.network_struct,self.reg_const,X, y_train) 
             self.theta = self.theta - self.learning_rate * grad
 
             #fp.write(f"\n第{i}次迭代loss值：{self.cost_func(self.theta,self.network_struct,self.reg_const,X_train, y_train)}")
@@ -168,3 +168,15 @@ class MLPHandWrite(object):
             self.theta = self.theta - update_theta
             #if(update_theta.max()<epsilon or update_theta.min()>-epsilon):
             #    break;
+
+
+from Concrete import *
+def main(data_url):
+    data,target=Data_preprocessing(data_url)
+
+    mlp_handwriting=MLPHandWrite(network_struct=(data.shape[1],9,5,1))
+    Regression(mlp_handwriting,data,target,splits=5,size=0.2)
+
+if __name__=='__main__':
+    url="./Concrete_Data.xls"
+    main(url)
