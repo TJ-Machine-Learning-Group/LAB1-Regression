@@ -1,16 +1,7 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Mon Mar 21 14:34:09 2022
-
-@author: I
-"""
-
 from copy import copy
 import numpy as np
 from numpy import ndarray
-import pandas as pd
-from numpy.random import choice, seed
-
 class Node:
     """Node class to build tree leaves.
     Attributes:
@@ -23,7 +14,6 @@ class Node:
     """
 
     attr_names = ("avg", "left", "right", "feature", "split", "mse")
-
     def __init__(self, avg=None, left=None, right=None, feature=None, split=None, mse=None):
         self.avg = avg
         self.left = left
@@ -36,7 +26,6 @@ class Node:
         ret = []
         for attr_name in self.attr_names:
             attr = getattr(self, attr_name)
-            # Describe the attribute of Node.
             if attr is None:
                 continue
             if isinstance(attr, Node):
@@ -48,11 +37,6 @@ class Node:
         return "\n".join(ret) + "\n"
 
     def copy(self, node):
-        """Copy the attributes of another Node.
-        Arguments:
-            node {Node}
-        """
-
         for attr_name in self.attr_names:
             attr = getattr(node, attr_name)
             setattr(self, attr_name, attr)
@@ -253,18 +237,10 @@ class DecisionTreeRegressorHandWrite:
             que.append(
                 (depth + 1, node.right, _data[idx_right], _label[idx_right]))
 
-        # Update tree depth and rules.
-        self.depth = depth
+        self.depth = depth#更新树深度
         self.get_rules()
 
     def predict_one(self, row: ndarray) -> float:
-        """Auxiliary function of predict.
-        Arguments:
-            row {ndarray} -- A sample of testing data.
-        Returns:
-            float -- Prediction of label.
-        """
-
         node = self.root
         while node.left and node.right:
             if row[node.feature] < node.split:
@@ -275,90 +251,11 @@ class DecisionTreeRegressorHandWrite:
         return node.avg
 
     def predict(self, data: ndarray) -> ndarray:
-        """Get the prediction of label.
-        Arguments:
-            data {ndarray} -- Testing data.
-        Returns:
-            ndarray -- Prediction of label.
-        """
-
         return np.apply_along_axis(self.predict_one, 1, data)
     
     def score(reg, X, y):
-        """Calculate the goodness of fit of regression model.
-        Arguments:
-            reg {model} -- regression model.
-            X {ndarray} -- 2d array object with int or float.
-            y {ndarray} -- 1d array object with int.
-        Returns:
-            float
-        """
         if isinstance(y, list):
             y = np.array(y)
-        y_hat = reg.predict(X)
-        if isinstance(y_hat, list):
-            y_hat = np.array(y_hat)
-        r2 = _get_r2(y, y_hat)
-        # print("Test r2 is %.3f!\n" % r2)
+        y_hat = reg.predict(X)#预测值
+        r2= 1 - ((y - y_hat)**2).sum() / ((y - y.mean())**2).sum()#R2
         return r2
-
-def _get_r2(y, y_hat):
-    """Calculate the goodness of fit.
-    Arguments:
-        y {ndarray} -- 1d array object with int.
-        y_hat {ndarray} -- 1d array object with int.
-    Returns:
-        float
-    """
-
-    m = y.shape[0]
-    n = y_hat.shape[0]
-    assert m == n, "Lengths of two arrays do not match!"
-    assert m != 0, "Empty array!"
-
-    sse = ((y - y_hat) ** 2).mean()
-    sst = y.var()
-    r2 = 1 - sse / sst
-    return r2
-    
-def train_test_split(data, label=None, prob=0.7, random_state=None):
-    """Split data, label into train set and test set.
-    Arguments:
-        data {ndarray} -- Training data.
-    Keyword Arguments:
-        label {ndarray} -- Target values.
-        prob {float} -- Train data expected rate between 0 and 1.
-        (default: {0.7})
-        random_state {int} -- Random seed. (default: {None})
-    Returns:
-        data_train {ndarray}
-        data_test {ndarray}
-        label_train {ndarray}
-        y_test {ndarray}
-    """
-
-    # Set random state.
-    if random_state is not None:
-        seed(random_state)
-
-    # Split data
-    n_rows, _ = data.shape
-    k = int(n_rows * prob)
-    train_indexes = choice(range(n_rows), size=k, replace=False)
-    test_indexes = np.array([i for i in range(n_rows) if i not in train_indexes])
-    data_train = data[train_indexes]
-    data_test = data[test_indexes]
-
-    # Split label.
-    if label is not None:
-        label_train = label[train_indexes]
-        label_test = label[test_indexes]
-        ret = (data_train, data_test, label_train, label_test)
-    else:
-        ret = (data_train, data_test)
-
-    # Cancel random state.
-    if random_state is not None:
-        seed(None)
-
-    return ret
