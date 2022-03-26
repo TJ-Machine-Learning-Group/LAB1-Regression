@@ -10,6 +10,7 @@ from sklearn.neural_network import MLPRegressor
 from sklearn.preprocessing import StandardScaler
 from DecisionTreeRegressorHandWrite import DecisionTreeRegressorHandWrite
 from MLPHandWrite import MLPHandWrite
+from LinearModelHandWrite import LinearRegressionHandWrite,LassoHandWrite,RidgeHandWrite
 #回归函数
 def Regression(model,boston_data,boston_target,splits,size):
    #n折交叉验证并打乱数据集顺序
@@ -65,6 +66,10 @@ def main(data_url):
     # Ridge Regression
     ridge_skl = Ridge()
 
+    lr_handwriting = LinearRegressionHandWrite()
+    lasso_handwriting= LassoHandWrite()
+    ridge_handwriting=RidgeHandWrite()
+    
     # Decision Trees
     dtr_skl = DecisionTreeRegressor()
     dtr_handwriting = DecisionTreeRegressorHandWrite()
@@ -75,18 +80,20 @@ def main(data_url):
     #mlp_skl = MLPRegressor(hidden_layer_sizes=(5,5),max_iter=10000)
     mlp_skl = MLPRegressor(hidden_layer_sizes=(100,70),max_iter=100)
     mlp_handwriting=MLPHandWrite(network_struct=(data.shape[1],9,5,1),reg_const=1)
-    Regression(mlp_handwriting,data,target,splits=5,size=0.2)
+    #Regression(mlp_handwriting,data,target,splits=5,size=0.2)
     
-    #models = [lr_skl, lasso_skl, ridge_skl, dtr_skl, dtr_handwriting, rfr_skl,mlp_skl,mlp_handwriting]
-    #names = ["Linear Regression from sklearn", "Lasso Regression from sklearn", "Ridge Regression from sklearn", 
-    #     "Decision Tree Regressor from sklearn", "Decision Tree Regressor writing by hand", 
-    #     "Random Forest Regressor from sklearn","Multi-Layer Perceptron Regressor from sklearn",
-    #     "Multi-Layer Perceptron writing by hand"]
-    #
-    #for i in range(len(models)):
-    #    #参数为5折验证，测试集占20%
-    #    print(names[i])
-    #    Regression(models[i],data,target,splits=5,size=0.2)
+    models = [lr_skl, lasso_skl, ridge_skl,lr_handwriting,lasso_handwriting,ridge_handwriting,
+             dtr_skl, dtr_handwriting, rfr_skl,mlp_skl,mlp_handwriting]
+    names = ["Linear Regression from sklearn", "Lasso Regression from sklearn", "Ridge Regression from sklearn", 
+            "Linear Regression writing by hand", "Lasso Regression writing by hand", "Ridge Regression writing by hand", 
+            "Decision Tree Regressor from sklearn", "Decision Tree Regressor writing by hand", 
+            "Random Forest Regressor from sklearn","Multi-Layer Perceptron Regressor from sklearn",
+            "Multi-Layer Perceptron writing by hand"]
+    
+    for i in range(len(models)):
+        #参数为5折验证，测试集占20%
+        print(names[i])
+        Regression(models[i],data,target,splits=5,size=0.2)
 
 if __name__=='__main__':
     url="./Concrete_Data.xls"

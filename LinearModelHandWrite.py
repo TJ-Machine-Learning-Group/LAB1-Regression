@@ -64,7 +64,7 @@ class LinearRegressionHandWrite(object):
 
 # Lasso Regression
 class LassoHandWrite():
-    def __init__(self,learning_rate=1e-7,reg_const=1):
+    def __init__(self,learning_rate=1e-6,reg_const=1):
         self.coef = None
         self.learning_rate = learning_rate
         self.reg_const=reg_const
@@ -73,7 +73,7 @@ class LassoHandWrite():
         m,n=data.shape
         self.coef=rand_init(n+1)#要加上bias
         x_train=np.column_stack((np.ones(m),data))
-        for _ in range(10000):  # 1000次迭代
+        for _ in range(3000):  # 1000次迭代
             grad = gradient(self.coef,x_train, target,reg_const=self.reg_const,L=1) 
             self.coef = self.coef - self.learning_rate * grad
 
