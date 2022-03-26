@@ -74,8 +74,9 @@ def main(data_url):
     # Multi-Layer Perceptron
     #mlp_skl = MLPRegressor(hidden_layer_sizes=(5,5),max_iter=10000)
     mlp_skl = MLPRegressor(hidden_layer_sizes=(100,70),max_iter=100)
-    mlp_handwriting=MLPHandWrite(network_struct=(data.shape[1],9,5,1))
+    mlp_handwriting=MLPHandWrite(network_struct=(data.shape[1],9,5,1),reg_const=1)
     Regression(mlp_handwriting,data,target,splits=5,size=0.2)
+    
     #models = [lr_skl, lasso_skl, ridge_skl, dtr_skl, dtr_handwriting, rfr_skl,mlp_skl,mlp_handwriting]
     #names = ["Linear Regression from sklearn", "Lasso Regression from sklearn", "Ridge Regression from sklearn", 
     #     "Decision Tree Regressor from sklearn", "Decision Tree Regressor writing by hand", 

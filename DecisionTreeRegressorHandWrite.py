@@ -238,7 +238,7 @@ class DecisionTreeRegressorHandWrite:
                 (depth + 1, node.right, _data[idx_right], _label[idx_right]))
 
         self.depth = depth#更新树深度
-        self.get_rules()
+        self.get_rules()#更新树规则
 
     def predict_one(self, row: ndarray) -> float:
         node = self.root

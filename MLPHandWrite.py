@@ -64,7 +64,7 @@ def cost_func(theta, network_struct,reg_const,X, y):
     for para in theta_list:
         theta = para[:, 1:]  # 不计算第一列的偏置
         L2_sum += np.sum(theta * theta)
-    J = J + ((reg_const / (2 * m)) * L2_sum)
+    J = J + (reg_const * L2_sum)
     return J
 
 def gradient(Theta,network_struct,reg_const,X, y):#计算梯度
@@ -103,7 +103,7 @@ def gradient(Theta,network_struct,reg_const,X, y):#计算梯度
     for i in range(len(theta_list)):
         para = theta_list[i]
         para[:, 0] = np.zeros((para[:, 0]).shape)  # 不计算第一列的偏置
-        grad_list[i] = grad_list[i] + (reg_const / m) * para
+        grad_list[i] = grad_list[i] + reg_const  * para
     vec = unroll(grad_list)#展平
     return vec
 
@@ -115,6 +115,7 @@ class MLPHandWrite(object):
         self.learning_rate=learning_rate
 
     def fit(self,X_train,y_train):
+        self.theta=unroll(rand_init(self.network_struct))
         m,n=X_train.shape
         X = np.column_stack((np.ones(m), X_train))  # 增广，方便与bias矩阵乘法运算
         #第一种：手写Adam
