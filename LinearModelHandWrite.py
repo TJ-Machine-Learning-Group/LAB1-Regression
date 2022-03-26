@@ -28,7 +28,7 @@ def gradient(Theta,X, y,reg_const=0,L=0):#计算梯度,X已增广过,L为0则不
 
 # Linear Regression
 class LinearRegressionHandWrite(object):
-    def __init__(self,learning_rate=1e-7):
+    def __init__(self,learning_rate=0.01):
         self.coef = None
         self.learning_rate = learning_rate
 
@@ -36,7 +36,7 @@ class LinearRegressionHandWrite(object):
         m,n=data.shape
         self.coef=rand_init(n+1)#要加上bias
         x_train=np.column_stack((np.ones(m),data))
-        for _ in range(10000):  # 1000次迭代
+        for _ in range(1000):  # 1000次迭代
             grad = gradient(self.coef,x_train, target) 
             #print(np.abs(grad.min()),np.abs(grad.max()))
             #if max(np.abs(grad.min()),np.abs(grad.max()))<10:
@@ -64,7 +64,7 @@ class LinearRegressionHandWrite(object):
 
 # Lasso Regression
 class LassoHandWrite():
-    def __init__(self,learning_rate=1e-6,reg_const=1):
+    def __init__(self,learning_rate=0.01,reg_const=1):
         self.coef = None
         self.learning_rate = learning_rate
         self.reg_const=reg_const
@@ -73,7 +73,7 @@ class LassoHandWrite():
         m,n=data.shape
         self.coef=rand_init(n+1)#要加上bias
         x_train=np.column_stack((np.ones(m),data))
-        for _ in range(3000):  # 1000次迭代
+        for _ in range(1000):  # 1000次迭代
             grad = gradient(self.coef,x_train, target,reg_const=self.reg_const,L=1) 
             self.coef = self.coef - self.learning_rate * grad
 
@@ -98,7 +98,7 @@ class LassoHandWrite():
 
 # Ridge Regression
 class RidgeHandWrite():
-    def __init__(self,learning_rate=1e-7,reg_const=1):
+    def __init__(self,learning_rate=0.01,reg_const=1):
         self.coef = None
         self.learning_rate = learning_rate
         self.reg_const=reg_const
@@ -107,7 +107,7 @@ class RidgeHandWrite():
         m,n=X.shape
         self.coef=rand_init(n+1)#要加上bias
         data=np.column_stack((np.ones(m),X))
-        for _ in range(10000):  # 1000次迭代
+        for _ in range(1000):  # 1000次迭代
             grad = gradient(self.coef,data, target,reg_const=self.reg_const,L=2) 
             self.coef = self.coef - self.learning_rate * grad
         #self.coef = np.matmul(np.matmul(np.linalg.inv(np.matmul(data.T, data)+self.reg_const*np.eye(data.shape[1])), data.T), target)
