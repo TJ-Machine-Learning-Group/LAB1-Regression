@@ -27,7 +27,7 @@ def Regression(model,boston_data,boston_target,splits,size,model_name="Mymodel")
             plt.xlabel("Predicted")
             plt.ylabel("True")
             plt.title(model_name)
-            plt.show()
+            #plt.show()
             #画图
             #plt.plot(np.arange(len(result)), y_test,label='true value')
             #plt.plot(np.arange(len(result)),result,label='predict value')

@@ -25,7 +25,7 @@ def main(data_url):
     # Decision Trees
     dtr_skl_mse = DecisionTreeRegressor()
     dtr_skl_fmse = DecisionTreeRegressor(criterion="friedman_mse")
-    dtr_skl_mae = DecisionTreeRegressor(criterion="mae",criterion='absolute_error')
+    dtr_skl_mae = DecisionTreeRegressor(criterion='absolute_error')
     dtr_handwriting = DecisionTreeRegressorHandWrite()
     # Random Forest Regressor
     rfr_skl = RandomForestRegressor(n_estimators=300)
