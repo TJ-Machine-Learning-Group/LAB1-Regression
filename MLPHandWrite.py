@@ -146,7 +146,8 @@ class MLPHandWrite(object):
     def predict(self,X_train):
         m,n=X_train.shape
         X = np.column_stack((np.ones(m), X_train))  # 增广，方便与bias矩阵乘法运算
-        return Forward_propagation(self.theta,self.network_struct,X)[0].T
+        temp = Forward_propagation(self.theta,self.network_struct,X)[0].T
+        return temp.reshape((-1,))
 
     def score(self,X_train,y):
         m,n=X_train.shape

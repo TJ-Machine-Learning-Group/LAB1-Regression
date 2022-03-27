@@ -1,3 +1,4 @@
+from sklearn.metrics import mean_squared_error,mean_absolute_error,max_error
 from sklearn.linear_model import LinearRegression, Lasso, Ridge
 from sklearn.tree import DecisionTreeRegressor
 from sklearn.ensemble import RandomForestRegressor
@@ -7,8 +8,10 @@ from MLPHandWrite import MLPHandWrite
 from LinearModelHandWrite import LinearRegressionHandWrite,LassoHandWrite,RidgeHandWrite
 from RandomForestHandWrite import myRandomForest
 from Data_preprocessing import Data_preprocessing
-from Regression import Regression
+from Regression import Draw, Regression
 from RandomForestHandWrite import myRandomForest
+import numpy as np
+
 def main(data_url):
     data,target=Data_preprocessing(data_url)
 
@@ -49,11 +52,15 @@ def main(data_url):
             "Random Forest Regressor from sklearn(poisson)","Random Forest Regressor written by hand(squared_error)",
             "Random Forest Regressor written by hand(absolute_error)","Multi-Layer Perceptron Regressor from sklearn",
             "Multi-Layer Perceptron writing by hand"]
+
+    mses = []
     
     for i in range(len(models)):
         #参数为5折验证，测试集占20%
         print(names[i])
-        Regression(models[i],data,target,splits=5,size=0.2,model_name=names[i])
+        Regression(models[i],data,target,splits=1,size=0.2,model_name=names[i])
+        mses.append(np.sqrt(mean_squared_error(target, models[i].predict(data))))
+    Draw(names,mses)
 
 if __name__=='__main__':
     url="./Concrete_Data.xls"

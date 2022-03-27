@@ -1,4 +1,4 @@
-
+import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.model_selection import ShuffleSplit
 #回归函数
@@ -21,12 +21,12 @@ def Regression(model,boston_data,boston_target,splits,size,model_name="Mymodel")
             #计算决定系数R^2
             score = model.score(x_test, y_test)
             #测试
-            result = model.predict(x_test)
-            plt.scatter(y_test, result)
-            plt.plot([y_test.min(), y_test.max()], [y_test.min(), y_test.max()], 'k--', lw=2)
-            plt.xlabel("Predicted")
-            plt.ylabel("True")
-            plt.title(model_name)
+            #result = model.predict(x_test)
+            #plt.scatter(y_test, result)
+            #plt.plot([y_test.min(), y_test.max()], [y_test.min(), y_test.max()], 'k--', lw=2)
+            #plt.xlabel("Predicted")
+            #plt.ylabel("True")
+            #plt.title(model_name)
             #plt.show()
             #画图
             #plt.plot(np.arange(len(result)), y_test,label='true value')
@@ -38,3 +38,23 @@ def Regression(model,boston_data,boston_target,splits,size,model_name="Mymodel")
             score_all += score
             n_fold += 1
         print("average score(R^2):",score_all/splits)
+
+def autolabel(rects,ax):
+    for rect in rects:
+        height = rect.get_height()
+        ax.annotate('{:.2f}'.format(height), xy=(rect.get_x() + rect.get_width() / 2, height),
+                    xytext=(0, 3), textcoords="offset points", ha='center', va='bottom')
+
+def Draw(names,mses):
+    x = np.arange(len(names)) 
+    fig, ax = plt.subplots(figsize=(12,8))
+    ax.set_ylabel('MSE')
+    ax.set_xlabel('Models')
+    ax.set_title('MSE with Different Algorithms')
+    ax.set_xticks(x)
+    ax.set_xticklabels(names, rotation=270)
+    width = 0.1
+    rects = ax.bar(x, mses, width)
+    autolabel(rects,ax)
+    fig.tight_layout()
+    plt.show()
