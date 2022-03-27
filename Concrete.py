@@ -8,9 +8,7 @@ from MLPHandWrite import MLPHandWrite
 from LinearModelHandWrite import LinearRegressionHandWrite,LassoHandWrite,RidgeHandWrite
 from RandomForestHandWrite import myRandomForest
 from Data_preprocessing import Data_preprocessing
-from Regression import Draw, Regression
-from RandomForestHandWrite import myRandomForest
-import numpy as np
+from Regression import Regression
 
 def main(data_url):
     data,target=Data_preprocessing(data_url)
