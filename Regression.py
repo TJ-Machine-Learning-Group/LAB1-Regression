@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.model_selection import ShuffleSplit
+import copy
 #回归函数
 def Regression(model,boston_data,boston_target,splits,size,model_name="Mymodel"):
     #n折交叉验证并打乱数据集顺序
@@ -53,7 +54,7 @@ def autolabel(rects,ax,labels):
 
 def Draw(names,mses,title,labels = None):
     if labels is None:
-        labels = mses
+        labels = copy.deepcopy(mses)
     x = np.arange(len(names)) 
     fig, ax = plt.subplots(figsize=(12,8))
     ax.set_ylabel(title)
