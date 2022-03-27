@@ -23,7 +23,9 @@ def main(data_url):
     ridge_handwriting=RidgeHandWrite()
     
     # Decision Trees
-    dtr_skl = DecisionTreeRegressor()
+    dtr_skl_mse = DecisionTreeRegressor()
+    dtr_skl_fmse = DecisionTreeRegressor(criterion="friedman_mse")
+    dtr_skl_mae = DecisionTreeRegressor(criterion="mae")
     dtr_handwriting = DecisionTreeRegressorHandWrite()
     # Random Forest Regressor
     rfr_skl = RandomForestRegressor(n_estimators=300)
@@ -32,13 +34,11 @@ def main(data_url):
     mlp_skl = MLPRegressor(hidden_layer_sizes=(100,70),max_iter=1800)
     mlp_handwriting=MLPHandWrite(network_struct=(data.shape[1],9,5,1),reg_const=1)
     
-    models = [lr_skl, lasso_skl, ridge_skl,lr_handwriting,lasso_handwriting,ridge_handwriting,
-             dtr_skl, dtr_handwriting, rfr_skl,mlp_skl,mlp_handwriting]
+    models = [lr_skl, lasso_skl, ridge_skl, dtr_skl_mse, dtr_skl_fmse, dtr_skl_mae, dtr_handwriting, rfr_skl,mlp_skl]
     names = ["Linear Regression from sklearn", "Lasso Regression from sklearn", "Ridge Regression from sklearn", 
-            "Linear Regression writing by hand", "Lasso Regression writing by hand", "Ridge Regression writing by hand", 
-            "Decision Tree Regressor from sklearn", "Decision Tree Regressor writing by hand", 
-            "Random Forest Regressor from sklearn","Multi-Layer Perceptron Regressor from sklearn",
-            "Multi-Layer Perceptron writing by hand"]
+         "Decision Tree Regressor from sklearn(squared_error)", "Decision Tree Regressor from sklearn(friedman_mse)",
+         "Decision Tree Regressor from sklearn(absolute_error)","Decision Tree Regressor writing by hand", 
+         "Random Forest Regressor from sklearn","Multi-Layer Perceptron Regressor from sklearn"]
     
     for i in range(len(models)):
         #参数为5折验证，测试集占20%
