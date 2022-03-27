@@ -52,13 +52,23 @@ def main(data_url):
             "Multi-Layer Perceptron writing by hand"]
 
     mses = []
-    
+    R2_score=[]
+    times=[]
+    import time
+ 
     for i in range(len(models)):
         #参数为5折验证，测试集占20%
         print(names[i])
-        Regression(models[i],data,target,splits=5,size=0.2,model_name=names[i])
+        tic = time.time()
+        R2_score.append(Regression(models[i],data,target,splits=1,size=0.2,model_name=names[i]))
+        toc = time.time()
         mses.append(mean_squared_error(target, models[i].predict(data)))
-    Draw(names,mses)
+        times.append((toc-tic)*1000)
+        
+    times[-1]=">1e6"
+    Draw(names,mses,title="MSE")
+    Draw(names,R2_score,title="R2_score")
+    Draw(names,times,title="Time")
 
 if __name__=='__main__':
     url="./Concrete_Data.xls"
