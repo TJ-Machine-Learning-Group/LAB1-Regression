@@ -124,8 +124,8 @@ class DecisionTreeRegressorHandWrite:
             que.append(
                 (depth + 1, node.right, _data[idx_right], _label[idx_right]))
 
-        self.depth = depth#¸üÐÂÊ÷Éî¶È
-        self.get_rules()#¸üÐÂÊ÷¹æÔò
+        self.depth = depth#æ›´æ–°æ ‘æ·±åº¦
+        self.get_rules()#æ›´æ–°æ ‘è§„åˆ™
 
     def predict_one(self, row: ndarray) -> float:
         node = self.root
@@ -143,14 +143,15 @@ class DecisionTreeRegressorHandWrite:
     def score(reg, X, y):
         if isinstance(y, list):
             y = np.array(y)
-        y_hat = reg.predict(X)#Ô¤²âÖµ
+        y_hat = reg.predict(X)#é¢„æµ‹å€¼
         r2= 1 - ((y - y_hat)**2).sum() / ((y - y.mean())**2).sum()#R2
         return r2
+
 from Data_preprocessing import Data_preprocessing
 from Regression import Regression
 
 if __name__ == "__main__":
     data,target=Data_preprocessing("./Concrete_Data.xls")
-
     model = DecisionTreeRegressorHandWrite()
     Regression(model, data, target, splits=1, size=0.2)
+
