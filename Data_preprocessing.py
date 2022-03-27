@@ -19,7 +19,6 @@ def Data_preprocessing(data_url):
     return newX,target
 
 def outlier_test(data, column, method=None, z=2):
-    
     if method == None:
         print(f'以 {column} 列为依据，使用 上下截断点法(iqr) 检测异常值...')
         print('=' * 70)

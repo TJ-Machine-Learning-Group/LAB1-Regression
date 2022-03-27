@@ -8,7 +8,7 @@ from LinearModelHandWrite import LinearRegressionHandWrite,LassoHandWrite,RidgeH
 from RandomForestHandWrite import myRandomForest
 from Data_preprocessing import Data_preprocessing
 from Regression import Regression
-
+from RandomForestHandWrite import myRandomForest
 def main(data_url):
     data,target=Data_preprocessing(data_url)
 
@@ -26,7 +26,7 @@ def main(data_url):
     # Decision Trees
     dtr_skl_mse = DecisionTreeRegressor()
     dtr_skl_fmse = DecisionTreeRegressor(criterion="friedman_mse")
-    dtr_skl_mae = DecisionTreeRegressor(criterion="mae")
+    dtr_skl_mae = DecisionTreeRegressor(criterion='absolute_error')
     dtr_handwriting = DecisionTreeRegressorHandWrite()
     # Random Forest Regressor
     rfr_skl_se = RandomForestRegressor(n_estimators=300)
@@ -43,6 +43,7 @@ def main(data_url):
     
     models = [lr_skl, lasso_skl, ridge_skl, dtr_skl_mse, dtr_skl_fmse, dtr_skl_mae, dtr_handwriting, rfr_skl_se,rfr_skl_ae,rfr_skl_p,rfr_handwriting_se,rfr_handwriting_ae,mlp_skl,mlp_handwriting]
     names = ["Linear Regression from sklearn", "Lasso Regression from sklearn", "Ridge Regression from sklearn", 
+        "Linear Regression writing by hand", "Lasso Regression writing by hand", "Ridge Regression writing by hand", 
          "Decision Tree Regressor from sklearn(squared_error)", "Decision Tree Regressor from sklearn(friedman_mse)",
          "Decision Tree Regressor from sklearn(absolute_error)","Decision Tree Regressor writing by hand", 
             "Random Forest Regressor from sklearn(squared_error)","Random Forest Regressor from sklearn(absolute_error)","Random Forest Regressor from sklearn(poisson)","Random Forest Regressor written by hand(squared_error)","Random Forest Regressor written by hand(absolute_error)","Multi-Layer Perceptron Regressor from sklearn",

@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
+from joblib import Parallel, delayed
 from sklearn.model_selection import train_test_split as tt_split
 from sklearn.metrics import r2_score
 
@@ -27,8 +28,7 @@ class absoluteError:
         mean= np.mat(np.ones((len(dataSet[:,-1]),1))*M)
         return np.sum(list(map(abs,list(dataSet[:,-1]-M))))
 
-from joblib import Parallel, delayed
-class myRandomForest:
+class myRandomForest(object):
     # 存放树的列表
     trees = []
     # 随机种子

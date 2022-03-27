@@ -1,34 +1,34 @@
 
 import matplotlib.pyplot as plt
 from sklearn.model_selection import ShuffleSplit
-#»Ø¹éº¯Êı
+#å›å½’å‡½æ•°
 def Regression(model,boston_data,boston_target,splits,size,model_name="Mymodel"):
-   #nÕÛ½»²æÑéÖ¤²¢´òÂÒÊı¾İ¼¯Ë³Ğò
+   #næŠ˜äº¤å‰éªŒè¯å¹¶æ‰“ä¹±æ•°æ®é›†é¡ºåº
         shuffle = ShuffleSplit(n_splits=splits, test_size=size, random_state=7)
         n_fold = 1
         score_all = 0
         X = boston_data
         Y = boston_target
-        #ÑµÁ·²âÊÔÑ­»·
+        #è®­ç»ƒæµ‹è¯•å¾ªç¯
         for train_indices, test_indices in shuffle.split(boston_data):
-            #»ñÈ¡´ËÕÛµÄÊı¾İ
+            #è·å–æ­¤æŠ˜çš„æ•°æ®
             x_train = X[train_indices]
             y_train = Y[train_indices]
             x_test = X[test_indices]
             y_test = Y[test_indices]
-            #Ä£ĞÍÑµÁ·
+            #æ¨¡å‹è®­ç»ƒ
             model.fit(x_train,y_train)
-            #¼ÆËã¾ö¶¨ÏµÊıR^2
+            #è®¡ç®—å†³å®šç³»æ•°R^2
             score = model.score(x_test, y_test)
-            #²âÊÔ
+            #æµ‹è¯•
             result = model.predict(x_test)
             plt.scatter(y_test, result)
             plt.plot([y_test.min(), y_test.max()], [y_test.min(), y_test.max()], 'k--', lw=2)
             plt.xlabel("Predicted")
             plt.ylabel("True")
             plt.title(model_name)
-            plt.show()
-            #»­Í¼
+            #plt.show()
+            #ç”»å›¾
             #plt.plot(np.arange(len(result)), y_test,label='true value')
             #plt.plot(np.arange(len(result)),result,label='predict value')
             #plt.legend(loc='upper right')
