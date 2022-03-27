@@ -237,8 +237,8 @@ class DecisionTreeRegressorHandWrite:
             que.append(
                 (depth + 1, node.right, _data[idx_right], _label[idx_right]))
 
-        self.depth = depth#¸üÐÂÊ÷Éî¶È
-        self.get_rules()#¸üÐÂÊ÷¹æÔò
+        self.depth = depth#æ›´æ–°æ ‘æ·±åº¦
+        self.get_rules()#æ›´æ–°æ ‘è§„åˆ™
 
     def predict_one(self, row: ndarray) -> float:
         node = self.root
@@ -256,6 +256,29 @@ class DecisionTreeRegressorHandWrite:
     def score(reg, X, y):
         if isinstance(y, list):
             y = np.array(y)
-        y_hat = reg.predict(X)#Ô¤²âÖµ
+        y_hat = reg.predict(X)#é¢„æµ‹å€¼
         r2= 1 - ((y - y_hat)**2).sum() / ((y - y.mean())**2).sum()#R2
         return r2
+    
+    def _print_loss(self,max_depth):
+        """Print loss for every layer
+        """
+        res = []
+        que = [self.root]
+        if self.root == None:
+            return res
+        
+        while que:
+            tempList = []
+            for i in range(len(que)):
+                node = que.pop(0)
+                if node.mse == None:
+                    node.mse = 0.0
+                tempList.append(node.mse)
+                if node.left:
+                    que.append(node.left)
+                if node.right:
+                    que.append(node.right)
+            res.append(sum(tempList)/len(tempList))
+            
+        return res
