@@ -52,18 +52,21 @@ def autolabel(rects,ax,labels):
         ax.annotate(name, xy=(rect.get_x() + rect.get_width() / 2, height),
                     xytext=(0, 3), textcoords="offset points", ha='center', va='bottom')
 
-def Draw(names,mses,title,labels = None):
+def Draw(names,height,title,labels = None):
     if labels is None:
-        labels = copy.deepcopy(mses)
-    x = np.arange(len(names)) 
-    fig, ax = plt.subplots(figsize=(12,8))
-    ax.set_ylabel(title)
-    ax.set_xlabel('Models')
-    ax.set_title(title+' with Different Algorithms')
-    ax.set_xticks(x)
-    ax.set_xticklabels(names, rotation=270)
-    width = 0.1
-    rects = ax.bar(x, mses, width)
-    autolabel(rects,ax,labels)
-    fig.tight_layout()
-    plt.show()
+        labels = copy.deepcopy(height)
+    elif len(height) == len(labels):
+        x = np.arange(len(names)) 
+        fig, ax = plt.subplots(figsize=(12,8))
+        ax.set_ylabel(title)
+        ax.set_xlabel('Models')
+        ax.set_title(title+' with Different Algorithms')
+        ax.set_xticks(x)
+        ax.set_xticklabels(names, rotation=270)
+        width = 0.1
+        rects = ax.bar(x, height, width)
+        autolabel(rects,ax,labels)
+        fig.tight_layout()
+        plt.show()
+    else:
+        print("标注个数需和柱个数相同")

@@ -67,7 +67,7 @@ def main(data_url):
         times.append((toc-tic)*1000)
     timeLabel = copy.deepcopy(times)
     timeLabel[-1] = ">1e6"
-    times[-1] = 0
+    times[-1] = 0#手写的多层感知机没有训练，而是直接加载了模型（因为训练速度太慢）
     # times[-1]=">1e6"
 
     Draw(names,mses,title="MSE")
