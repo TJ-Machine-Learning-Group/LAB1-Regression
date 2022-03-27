@@ -56,7 +56,7 @@ def main(data_url):
     for i in range(len(models)):
         #参数为5折验证，测试集占20%
         print(names[i])
-        Regression(models[i],data,target,splits=1,size=0.2,model_name=names[i])
+        Regression(models[i],data,target,splits=5,size=0.2,model_name=names[i])
         mses.append(mean_squared_error(target, models[i].predict(data)))
     Draw(names,mses)
 
