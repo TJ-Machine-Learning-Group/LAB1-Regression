@@ -15,29 +15,29 @@ def Data_preprocessing(data_url):
     print("target of boston:",target.shape)
 
     sc = StandardScaler()
-    newX = sc.fit_transform(newX)#½«×Ô±äÁ¿¹éÒ»»¯Îª±ê×¼ÕıÌ¬·Ö²¼,¶ÔÌİ¶ÈÏÂ½µ·½·¨Ó°Ïì¼«´ó
+    newX = sc.fit_transform(newX)#å°†è‡ªå˜é‡å½’ä¸€åŒ–ä¸ºæ ‡å‡†æ­£æ€åˆ†å¸ƒ,å¯¹æ¢¯åº¦ä¸‹é™æ–¹æ³•å½±å“æå¤§
     return newX,target
 
 def outlier_test(data, column, method=None, z=2):
     
     if method == None:
-        print(f'ÒÔ {column} ÁĞÎªÒÀ¾İ£¬Ê¹ÓÃ ÉÏÏÂ½Ø¶Ïµã·¨(iqr) ¼ì²âÒì³£Öµ...')
+        print(f'ä»¥ {column} åˆ—ä¸ºä¾æ®ï¼Œä½¿ç”¨ ä¸Šä¸‹æˆªæ–­ç‚¹æ³•(iqr) æ£€æµ‹å¼‚å¸¸å€¼...')
         print('=' * 70)
         column_iqr = np.quantile(data[column], 0.75) - np.quantile(data[column], 0.25)
         (q1, q3) = np.quantile(data[column], 0.25), np.quantile(data[column], 0.75)
         upper, lower = (q3 + 1.5 * column_iqr), (q1 - 1.5 * column_iqr)
         outlier = data[(data[column] <= lower) | (data[column] >= upper)]
-        print(f'µÚÒ»·ÖÎ»Êı: {q1}, µÚÈı·ÖÎ»Êı£º{q3}, ËÄ·ÖÎ»¼«²î£º{column_iqr}')
-        print(f"ÉÏ½Ø¶Ïµã£º{upper}, ÏÂ½Ø¶Ïµã£º{lower}")
+        print(f'ç¬¬ä¸€åˆ†ä½æ•°: {q1}, ç¬¬ä¸‰åˆ†ä½æ•°ï¼š{q3}, å››åˆ†ä½æå·®ï¼š{column_iqr}')
+        print(f"ä¸Šæˆªæ–­ç‚¹ï¼š{upper}, ä¸‹æˆªæ–­ç‚¹ï¼š{lower}")
         return outlier, upper, lower
     
     if method == 'z':
         
-        print(f'ÒÔ {column} ÁĞÎªÒÀ¾İ£¬Ê¹ÓÃ Z ·ÖÊı·¨£¬z ·ÖÎ»ÊıÈ¡ {z} À´¼ì²âÒì³£Öµ...')
+        print(f'ä»¥ {column} åˆ—ä¸ºä¾æ®ï¼Œä½¿ç”¨ Z åˆ†æ•°æ³•ï¼Œz åˆ†ä½æ•°å– {z} æ¥æ£€æµ‹å¼‚å¸¸å€¼...')
         print('=' * 70)    
         mean, std = np.mean(data[column]), np.std(data[column])
         upper, lower = (mean + z * std), (mean - z * std)
-        print(f"È¡ {z} ¸ö Z·ÖÊı£º´óÓÚ {upper} »òĞ¡ÓÚ {lower} µÄ¼´¿É±»ÊÓÎªÒì³£Öµ¡£")
+        print(f"å– {z} ä¸ª Zåˆ†æ•°ï¼šå¤§äº {upper} æˆ–å°äº {lower} çš„å³å¯è¢«è§†ä¸ºå¼‚å¸¸å€¼ã€‚")
         print('=' * 70)
         outlier = data[(data[column] <= lower) | (data[column] >= upper)]
         return outlier, upper, lower
