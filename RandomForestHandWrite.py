@@ -3,15 +3,10 @@ import matplotlib.pyplot as plt
 
 from sklearn.model_selection import train_test_split as tt_split
 from sklearn.metrics import r2_score
-import pandas as pd
-from sklearn.model_selection import ShuffleSplit
-
-from sklearn.metrics import mean_squared_error
 
 import warnings 
 warnings.filterwarnings('ignore')
 
-from Data_preprocessing import Data_preprocessing
 
 # 计算方差
 class squaredError:
@@ -19,7 +14,7 @@ class squaredError:
         pass
     
     def value(self,dataSet):
-        #print((dataSet[:,-1])*np.shape(dataSet)[0])
+        #print((dataSet[:,-1])*shape(dataSet)[0])
         return np.var(dataSet[:,-1])*np.shape(dataSet)[0]
 
 # 计算绝对误差
@@ -135,7 +130,7 @@ class myRandomForest:
         return retTree
     
     # 初始化随机森林
-    def __init__(self, random_state, n_estimators, max_features, max_depth, min_change = 0.001,criterion="MSE",
+    def __init__(self, random_state=2, n_estimators=10, max_features=4, max_depth=12, min_change = 0.001,criterion="MSE",
                  min_samples_split = 0, min_samples_leaf = 0, sample_radio = 0.9, n_jobs = 10):
         self.trees = []
         self.random_state = random_state
@@ -212,88 +207,10 @@ class myRandomForest:
     def score(self, X, target):
         return r2_score(target, self.predict(X))
 
-#回归函数
-def Regression(model,boston_data,boston_target,splits,size):
-   #n折交叉验证并打乱数据集顺序
-        shuffle = ShuffleSplit(n_splits=splits, test_size=size, random_state=7)
-        n_fold = 1
-        score_all = 0
-        X = boston_data
-        Y = boston_target
-        scores=[]
-        rmses = []
-        #训练测试循环
-        for train_indices, test_indices in shuffle.split(boston_data):
-            #获取此折的数据
-            x_train = X[train_indices]
-            y_train = Y[train_indices]
-            x_test = X[test_indices]
-            y_test = Y[test_indices]
-            #模型训练
-            model.fit(x_train,y_train)
-            #计算决定系数R^2
-            score = model.score(x_test, y_test)
-            scores.append(score)
-            
-            y_pred=model.predict(x_test)
-            rmses.append(np.sqrt(mean_squared_error(y_test, y_pred)))
-
-            print('fold {}/{},score(R^2)={}'.format(n_fold,splits,score))
-            score_all += score
-            n_fold += 1
-        
-        # score结果可视化
-        # plt.plot(scores)
-        # for x,y in enumerate(scores):
-        #     plt.text(x, y, y, ha='center', va='bottom', fontsize=8)
-        # plt.show()
-        # y_pred=model.predict(X)
-        # y_pred=y_pred.reshape(1,y_pred.shape[0])
-        # print(y_pred.shape)
-        # Y=Y.reshape(1,Y.shape[0])
-        # print(Y.shape)
-
-        # predict和truth对比结果可视化
-        # plt.scatter(Y, y_pred.A)
-        # plt.plot([Y.min(), Y.max()], [Y.min(), Y.max()], 'k--', lw=2)
-        # plt.ylabel("Predicted")
-        # plt.xlabel("True")
-        # plt.title("Random Forest Regressor")
-        # plt.show()
-        
-        # loss可视化
-        # x = np.arange(5) 
-        # width = 0.3
-        # fig, ax = plt.subplots(figsize=(10,7))
-        # rects = ax.bar(x, rmses, width)
-        # ax.set_ylabel('RMSE')
-        # ax.set_xlabel('Models')
-        # ax.set_title('loss(MSE)')
-        # ax.set_xticks(x)
-        # #ax.set_xticklabels(names, rotation=45)
-        # for rect in rects:
-        #     height = rect.get_height()
-        #     ax.annotate('{:.2f}'.format(height), xy=(rect.get_x() + rect.get_width() / 2, height),
-        #                 xytext=(0, 3), textcoords="offset points", ha='center', va='bottom')
-        # fig.tight_layout()
-        # plt.show()
-        print("average score(R^2):",score_all/splits)
-
-def main(data_url):
-    data,target=Data_preprocessing(data_url)
-
-    rfr_hw1 = myRandomForest(random_state=2, n_estimators=10, max_features=4, max_depth=12, min_change=0.001,min_samples_leaf=1, min_samples_split=2)
-
-    rfr_hw2 = myRandomForest(criterion="MAE", random_state=2, n_estimators=10, max_features=4, max_depth=12, min_change=0.001,min_samples_leaf=1, min_samples_split=2)
-    
-    models = [rfr_hw1,rfr_hw2]
-    names = ["Random Forest Regressor writing by hand(MSE)","Random Forest Regressor writing by hand(MAE)"]
-
-    for i in range(len(models)):
-        #参数为5折验证，测试集占20%
-        print(names[i])
-        Regression(models[i],data,target,splits=5,size=0.2)
+from Data_preprocessing import Data_preprocessing
+from Regression import Regression
 
 if __name__=='__main__':
-    url="Concrete_Data.xls"
-    main(url)
+    data,target=Data_preprocessing("./Concrete_Data.xls")
+    model = myRandomForest()
+    Regression(model, data, target, splits=1, size=0.2)
