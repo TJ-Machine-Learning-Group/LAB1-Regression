@@ -1,6 +1,7 @@
 from sklearn.decomposition import PCA
 import pandas as pd
 from sklearn.preprocessing import StandardScaler
+import numpy as np
 
 def Data_preprocessing(data_url):
     raw_df = pd.read_excel(data_url)
