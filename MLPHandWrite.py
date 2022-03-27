@@ -136,7 +136,7 @@ class MLPHandWrite(object):
 
             #第三种：传统方法（上课讲的方法）
             #fp=open("loss.txt","w",encoding="utf8")
-            for i in range(1000):  # 1000次迭代
+            for i in range(10000):  # 10000次迭代
                 grad = gradient(self.theta,self.network_struct,self.reg_const,X, y_train) 
                 self.theta = self.theta - self.learning_rate * grad
 

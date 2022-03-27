@@ -67,12 +67,12 @@ def main(data_url):
         times.append((toc-tic)*1000)
     timeLabel = copy.deepcopy(times)
     timeLabel[-1] = ">1e6"
-    times[-1] = min(times)/2
+    times[-1] = 0
     # times[-1]=">1e6"
 
     Draw(names,mses,title="MSE")
     Draw(names,R2_score,title="R2_score")
-    Draw(names,times,title="Time",labels=timeLabel)
+    Draw(names,times,title="Time/ms",labels=timeLabel)
 
 if __name__=='__main__':
     url="./Concrete_Data.xls"
