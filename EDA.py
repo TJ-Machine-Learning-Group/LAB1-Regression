@@ -48,7 +48,7 @@ plt.show()
 
 # Observations from CC Strength vs (Fine aggregate, Super Plasticizer, FlyAsh)
 fig, ax = plt.subplots(figsize=(10,7))
-sns.scatterplot(y="CC_Strength", x="FineAggregate", hue="FlyAsh", size="Superplasticizer", 
+sns.scatterplot(y="CC_Strength", x="FineAggregate", hue="FlyAsh", size="Superplasticizer",
                 data=data, ax=ax, sizes=(50, 300))
 ax.set_title("CC Strength vs (Fine aggregate, Super Plasticizer, FlyAsh)")
 ax.legend(loc="upper left", bbox_to_anchor=(1,1))
@@ -57,7 +57,7 @@ plt.show()
 
 # Observations from CC Strength vs (Fine aggregate, Super Plasticizer, Water)
 fig, ax = plt.subplots(figsize=(10,7))
-sns.scatterplot(y="CC_Strength", x="FineAggregate", hue="Water", size="Superplasticizer", 
+sns.scatterplot(y="CC_Strength", x="FineAggregate", hue="Water", size="Superplasticizer",
                 data=data, ax=ax, sizes=(50, 300))
 ax.set_title("CC Strength vs (Fine aggregate, Super Plasticizer, Water)")
 ax.legend(loc="upper left", bbox_to_anchor=(1,1))
