@@ -77,10 +77,8 @@ def main(data_url):
     rfr_skl = RandomForestRegressor(n_estimators=300)
     
     # Multi-Layer Perceptron
-    #mlp_skl = MLPRegressor(hidden_layer_sizes=(5,5),max_iter=10000)
-    mlp_skl = MLPRegressor(hidden_layer_sizes=(100,70),max_iter=100)
+    mlp_skl = MLPRegressor(hidden_layer_sizes=(100,70),max_iter=1800)
     mlp_handwriting=MLPHandWrite(network_struct=(data.shape[1],9,5,1),reg_const=1)
-    #Regression(mlp_handwriting,data,target,splits=5,size=0.2)
     
     models = [lr_skl, lasso_skl, ridge_skl,lr_handwriting,lasso_handwriting,ridge_handwriting,
              dtr_skl, dtr_handwriting, rfr_skl,mlp_skl,mlp_handwriting]

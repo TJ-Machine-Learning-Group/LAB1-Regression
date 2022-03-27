@@ -6,6 +6,23 @@ from sklearn.model_selection import ShuffleSplit
 
 def rand_init(theta_num):  # 随机初始化模型参数
     return (2 * np.random.rand(theta_num)) - 1 
+def cost_func(Theta,X, y,reg_const=0,L=0):#计算梯度,X已增广过,L为0则不正则化,否则为L1,L2
+    m, n = X.shape
+    theta=Theta
+    J=0
+    for t in range(m):#每个样本
+        x=X[t,:]
+        h=np.matmul(x,theta)
+        diff=h-y[t]
+        J=J+diff*diff
+    J=(1.0/(m*2))*J# 均方差
+    
+    # 额外计算正则化项(L1/2)
+    if(L==1):
+        J = J + reg_const * np.sum(theta)
+    if(L==2):
+        J = J + reg_const * np.sum(theta*theta) / 2.0
+    return J
 
 def gradient(Theta,X, y,reg_const=0,L=0):#计算梯度,X已增广过,L为0则不正则化,否则为L1,L2
     m, n = X.shape
@@ -21,28 +38,36 @@ def gradient(Theta,X, y,reg_const=0,L=0):#计算梯度,X已增广过,L为0则不
     grad = grad / m #除以m
     # 反向传播，额外计算正则化项(L1)
     if(L==1):
-        grad = grad + reg_const * np.where(grad!=0,np.absolute(grad)/grad,0)#L1导数为绝对值除以自身
+        grad = grad + reg_const * np.where(theta!=0,np.absolute(theta)/theta,0)#L1导数为绝对值除以自身
     if(L==2):
-        grad = grad + reg_const * grad
+        grad = grad +reg_const * theta
     return grad
 
 # Linear Regression
 class LinearRegressionHandWrite(object):
-    def __init__(self,learning_rate=0.01):
+    def __init__(self,batch_size=512,learning_rate=0.01):
         self.coef = None
         self.learning_rate = learning_rate
+        #self.batch_size=batch_size
 
     def fit(self, data, target):
         m,n=data.shape
         self.coef=rand_init(n+1)#要加上bias
         x_train=np.column_stack((np.ones(m),data))
-        for _ in range(1000):  # 1000次迭代
+        #fp=open("linear_loss.txt","w",encoding="utf8")
+        #cur=0
+        for i in range(400):  # 1000次迭代
             grad = gradient(self.coef,x_train, target) 
+            #grad = gradient(self.coef,x_train[cur:cur+self.batch_size], target) 
+            #cur=cur+self.batch_size
+            #if cur>=m:
+            #    cur=0
+            #fp.write(f"\n第{i}轮,loss={cost_func(self.coef,x_train, target)}")
             #print(np.abs(grad.min()),np.abs(grad.max()))
             #if max(np.abs(grad.min()),np.abs(grad.max()))<10:
             #    break
             self.coef = self.coef - self.learning_rate * grad
-
+        #fp.close()
         #self.coef = np.matmul(np.matmul(np.linalg.inv(np.matmul(x_train.T, x_train)), x_train.T), target)#最小二乘法
 
     def score(self, data, target):
@@ -64,7 +89,7 @@ class LinearRegressionHandWrite(object):
 
 # Lasso Regression
 class LassoHandWrite():
-    def __init__(self,learning_rate=0.01,reg_const=1):
+    def __init__(self,learning_rate=0.01,reg_const=0.1):
         self.coef = None
         self.learning_rate = learning_rate
         self.reg_const=reg_const
@@ -72,11 +97,13 @@ class LassoHandWrite():
     def fit(self, data, target):
         m,n=data.shape
         self.coef=rand_init(n+1)#要加上bias
+        #fp=open("lasso_loss.txt","w",encoding="utf8")
         x_train=np.column_stack((np.ones(m),data))
-        for _ in range(1000):  # 1000次迭代
+        for i in range(400):  # 1000次迭代
             grad = gradient(self.coef,x_train, target,reg_const=self.reg_const,L=1) 
             self.coef = self.coef - self.learning_rate * grad
-
+            #fp.write(f"\n第{i}轮,loss={cost_func(self.coef,x_train, target,reg_const=self.reg_const,L=1)}")
+        #fp.close()
         #self.coef = np.matmul(np.matmul(np.linalg.inv(np.matmul(x_train.T, x_train)), x_train.T), target)#最小二乘法
 
     def score(self, data, target):
@@ -98,18 +125,21 @@ class LassoHandWrite():
 
 # Ridge Regression
 class RidgeHandWrite():
-    def __init__(self,learning_rate=0.01,reg_const=1):
+    def __init__(self,learning_rate=0.01,reg_const=0.1):
         self.coef = None
         self.learning_rate = learning_rate
         self.reg_const=reg_const
 
-    def fit(self, X, target):
-        m,n=X.shape
+    def fit(self, data, target):
+        m,n=data.shape
+        #fp= open("ridge_loss.txt","w",encoding="utf8")
         self.coef=rand_init(n+1)#要加上bias
-        data=np.column_stack((np.ones(m),X))
-        for _ in range(1000):  # 1000次迭代
-            grad = gradient(self.coef,data, target,reg_const=self.reg_const,L=2) 
+        x_train=np.column_stack((np.ones(m),data))
+        for i in range(400):  # 1000次迭代
+            grad = gradient(self.coef,x_train, target,reg_const=self.reg_const,L=2) 
             self.coef = self.coef - self.learning_rate * grad
+            #fp.write(f"\n第{i}轮,loss={cost_func(self.coef,x_train, target,reg_const=self.reg_const,L=2)}")
+        #fp.close()
         #self.coef = np.matmul(np.matmul(np.linalg.inv(np.matmul(data.T, data)+self.reg_const*np.eye(data.shape[1])), data.T), target)
 
     def score(self, data, target):
@@ -129,42 +159,11 @@ class RidgeHandWrite():
         H=np.matmul(X,np.reshape(self.coef,(n+1,1)))
         return H
 
-
-def regression(model, data, target, splits, size):
-    # n折交叉验证并打乱数据集顺序
-    shuffle = ShuffleSplit(n_splits=splits, test_size=size, random_state=7)
-    n_fold = 1
-    score_all = 0
-    x = data
-    y = target
-    # 训练测试循环
-    for train_indices, test_indices in shuffle.split(data):
-        # 获取此折的数据
-        x_train = x[train_indices]
-        y_train = y[train_indices]
-        x_test = x[test_indices]
-        y_test = y[test_indices]
-        # 模型训练
-        model.fit(x_train, y_train)
-        # 计算决定系数R^2
-        score = model.score(x_test, y_test)
-        # 测试
-        result = model.predict(x_test)
-        print(model.coef,score,sep = '\n')
-        print('fold {}/{},score(R^2)={}'.format(n_fold, splits, score))
-        score_all += score
-        n_fold += 1
-    print("average score(R^2):", score_all / splits)
-
-
+from Concrete import *
 if __name__ == "__main__":
-    data_url = "./Concrete_Data.xls"
-    raw_df = pd.read_excel(data_url)
-    data = raw_df.values[:, :-1]
-    target = raw_df.values[:, -1]
+    data,target=Data_preprocessing("./Concrete_Data.xls")
 
     #model = LinearRegressionHandWrite()
     model= LassoHandWrite()
-
     #model=RidgeHandWrite()
-    regression(model, data, target, splits=5, size=0.2)
+    Regression(model, data, target, splits=1, size=0.2)

@@ -133,7 +133,7 @@ class MLPHandWrite(object):
         #fp=open("loss.txt","w",encoding="utf8")
 
         #第三种：传统方法（上课讲的方法）
-        for i in range(1000):  # 10000次迭代
+        for i in range(1000):  # 1000次迭代
             grad = gradient(self.theta,self.network_struct,self.reg_const,X, y_train) 
             self.theta = self.theta - self.learning_rate * grad
 
@@ -156,7 +156,7 @@ class MLPHandWrite(object):
         score = 1 - ((Y - H)**2).sum() / ((Y - Y.mean())**2).sum()
         return score
 
-    def My_Adam(self, X, y, alpha=0.5, beta1=0.9, beta2=0.999,epsilon=1e-8, max_iter=100):
+    def My_Adam(self, X, y, alpha=0.5, beta1=0.9, beta2=0.999,epsilon=1e-8, max_iter=3000):
         m = 0
         v = 0
         for it in range(1, max_iter):
