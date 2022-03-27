@@ -155,7 +155,9 @@ class RidgeHandWrite():
         H=np.matmul(X,np.reshape(self.coef,(n+1,1)))
         return H
 
-from Concrete import *
+from Data_preprocessing import Data_preprocessing
+from Regression import Regression
+
 if __name__ == "__main__":
     data,target=Data_preprocessing("./Concrete_Data.xls")
 

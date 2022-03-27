@@ -5,7 +5,7 @@ def sigmoid(z):
     return 1.0 / (1.0 + np.exp(-z))
     #with warnings.catch_warnings(record=True) as w:
     #res=np.where(z > 0, 1.0 / (1.0 + np.exp(-z)), np.exp(z) / (1.0 + np.exp(z)))
-    return res
+    #return res
 
 
 def sigmoid_grad(z):
@@ -114,31 +114,34 @@ class MLPHandWrite(object):
         self.reg_const=reg_const
         self.learning_rate=learning_rate
 
-    def fit(self,X_train,y_train):
-        self.theta=unroll(rand_init(self.network_struct))
-        m,n=X_train.shape
-        X = np.column_stack((np.ones(m), X_train))  # 增广，方便与bias矩阵乘法运算
-        #第一种：手写Adam
-        #self.My_Adam(X,y_train)
+    def fit(self,X_train,y_train,isload=True):
+        if isload:
+            self.load_model()
+            #print(self.theta)
+        else:#重新训练
+            self.theta=unroll(rand_init(self.network_struct))
+            m,n=X_train.shape
+            X = np.column_stack((np.ones(m), X_train))  # 增广，方便与bias矩阵乘法运算
+            #第一种：手写Adam
+            #self.My_Adam(X,y_train)
 
-        #第二种：调库BFGS
-        #Result = opt.minimize(jac=gradient,
-        #              fun=cost_func,
-        #              x0=self.theta,
-        #              args=(self.network_struct,self.reg_const,X, y_train),
-        #              method='BFGS'
-        #              )  # 最小化loss
-        #self.theta = Result.x  # x为值
+            #第二种：调库BFGS
+            #Result = opt.minimize(jac=gradient,
+            #              fun=cost_func,
+            #              x0=self.theta,
+            #              args=(self.network_struct,self.reg_const,X, y_train),
+            #              method='BFGS'
+            #              )  # 最小化loss
+            #self.theta = Result.x  # x为值
 
-        #fp=open("loss.txt","w",encoding="utf8")
+            #第三种：传统方法（上课讲的方法）
+            #fp=open("loss.txt","w",encoding="utf8")
+            for i in range(1000):  # 1000次迭代
+                grad = gradient(self.theta,self.network_struct,self.reg_const,X, y_train) 
+                self.theta = self.theta - self.learning_rate * grad
 
-        #第三种：传统方法（上课讲的方法）
-        for i in range(1000):  # 1000次迭代
-            grad = gradient(self.theta,self.network_struct,self.reg_const,X, y_train) 
-            self.theta = self.theta - self.learning_rate * grad
-
-            #fp.write(f"\n第{i}次迭代loss值：{self.cost_func(self.theta,self.network_struct,self.reg_const,X_train, y_train)}")
-        #fp.close()
+                #fp.write(f"\n第{i}次迭代loss值：{self.cost_func(self.theta,self.network_struct,self.reg_const,X_train, y_train)}")
+            #fp.close()
 
     def predict(self,X_train):
         m,n=X_train.shape
@@ -169,9 +172,23 @@ class MLPHandWrite(object):
             self.theta = self.theta - update_theta
             #if(update_theta.max()<epsilon or update_theta.min()>-epsilon):
             #    break;
+    def save_model(self,url="./model/MyMLPModel.txt"):
+        fp=open(url,"w",encoding="utf8")
+        for i in np.nditer(self.theta):
+            fp.write(str(i)+'\n')
+        fp.close()
+    def load_model(self,url="./model/MyMLPModel.txt"):
+        cur=0
+        for i in open(url,"r",encoding="utf8").read().strip().split('\n'):
+            try:
+                self.theta[cur]=float(i.strip())
+                cur+=1
+            except:
+                pass
 
 
-from Concrete import *
+from Data_preprocessing import Data_preprocessing
+from Regression import Regression
 def main(data_url):
     data,target=Data_preprocessing(data_url)
 
