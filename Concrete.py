@@ -10,6 +10,7 @@ from RandomForestHandWrite import myRandomForest
 from Data_preprocessing import Data_preprocessing
 from Regression import Regression,Draw
 #import numpy as np
+import copy
 def main(data_url):
     data,target=Data_preprocessing(data_url)
 
@@ -64,11 +65,14 @@ def main(data_url):
         toc = time.time()
         mses.append(mean_squared_error(target, models[i].predict(data)))
         times.append((toc-tic)*1000)
-        
-    times[-1]=">1e6"
+    timeLabel = copy.deepcopy(times)
+    timeLabel[-1] = ">1e6"
+    times[-1] = min(times)/2
+    # times[-1]=">1e6"
+
     Draw(names,mses,title="MSE")
     Draw(names,R2_score,title="R2_score")
-    Draw(names,times,title="Time")
+    Draw(names,times,title="Time",labels=timeLabel)
 
 if __name__=='__main__':
     url="./Concrete_Data.xls"

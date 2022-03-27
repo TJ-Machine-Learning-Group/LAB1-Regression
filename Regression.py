@@ -41,13 +41,19 @@ def Regression(model,boston_data,boston_target,splits,size,model_name="Mymodel")
     return score_all/splits
     
 
-def autolabel(rects,ax):
-    for rect in rects:
+def autolabel(rects,ax,labels):
+    for i,rect in enumerate(rects):
         height = rect.get_height()
-        ax.annotate('{:.2f}'.format(height), xy=(rect.get_x() + rect.get_width() / 2, height),
+        if isinstance(labels[i],float):
+            name = "{:.2f}".format(labels[i])
+        else:
+            name = labels[i]
+        ax.annotate(name, xy=(rect.get_x() + rect.get_width() / 2, height),
                     xytext=(0, 3), textcoords="offset points", ha='center', va='bottom')
 
-def Draw(names,mses,title):
+def Draw(names,mses,title,labels = None):
+    if labels is None:
+        labels = mses
     x = np.arange(len(names)) 
     fig, ax = plt.subplots(figsize=(12,8))
     ax.set_ylabel(title)
@@ -57,6 +63,6 @@ def Draw(names,mses,title):
     ax.set_xticklabels(names, rotation=270)
     width = 0.1
     rects = ax.bar(x, mses, width)
-    autolabel(rects,ax)
+    autolabel(rects,ax,labels)
     fig.tight_layout()
     plt.show()
