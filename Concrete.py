@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
-import numpy as np
-import matplotlib.pyplot as plt
+
 import pandas as pd
 from sklearn.model_selection import ShuffleSplit
 from sklearn.linear_model import LinearRegression, Lasso, Ridge
@@ -44,16 +43,21 @@ def Regression(model,boston_data,boston_target,splits,size):
             n_fold += 1
         print("average score(R^2):",score_all/splits)
 
+from sklearn.decomposition import PCA
 def Data_preprocessing(data_url):
     raw_df = pd.read_excel(data_url)
     data = raw_df.values[:, :-1]
-    print("data of boston:",data.shape)
+    pca=PCA(n_components=data.shape[1]-2)
+    newX = pca.fit_transform(data)
+    print(pca.explained_variance_ratio_)
+    print("newX of boston:",newX.shape)
+
     target = raw_df.values[:, -1]
     print("target of boston:",target.shape)
 
     sc = StandardScaler()
-    data = sc.fit_transform(data)#将自变量归一化为标准正态分布,对神经网络影响极大
-    return data,target
+    newX = sc.fit_transform(newX)#将自变量归一化为标准正态分布,对梯度下降方法影响极大
+    return newX,target
 
 def main(data_url):
     data,target=Data_preprocessing(data_url)

@@ -1,8 +1,4 @@
-from mimetypes import init
 import numpy as np
-import pandas as pd
-from sklearn.model_selection import ShuffleSplit
-
 
 def rand_init(theta_num):  # 随机初始化模型参数
     return (2 * np.random.rand(theta_num)) - 1 
@@ -45,7 +41,7 @@ def gradient(Theta,X, y,reg_const=0,L=0):#计算梯度,X已增广过,L为0则不
 
 # Linear Regression
 class LinearRegressionHandWrite(object):
-    def __init__(self,batch_size=512,learning_rate=0.01):
+    def __init__(self,batch_size=128,learning_rate=0.01):
         self.coef = None
         self.learning_rate = learning_rate
         #self.batch_size=batch_size
@@ -54,7 +50,7 @@ class LinearRegressionHandWrite(object):
         m,n=data.shape
         self.coef=rand_init(n+1)#要加上bias
         x_train=np.column_stack((np.ones(m),data))
-        #fp=open("linear_loss.txt","w",encoding="utf8")
+        #fp=open("linear_loss_batch.txt","w",encoding="utf8")
         #cur=0
         for i in range(400):  # 1000次迭代
             grad = gradient(self.coef,x_train, target) 
@@ -62,7 +58,7 @@ class LinearRegressionHandWrite(object):
             #cur=cur+self.batch_size
             #if cur>=m:
             #    cur=0
-            #fp.write(f"\n第{i}轮,loss={cost_func(self.coef,x_train, target)}")
+            #fp.write(f"\n第{i}轮,loss={cost_func(self.coef,x_train[cur:cur+self.batch_size], target)}")
             #print(np.abs(grad.min()),np.abs(grad.max()))
             #if max(np.abs(grad.min()),np.abs(grad.max()))<10:
             #    break
@@ -163,7 +159,7 @@ from Concrete import *
 if __name__ == "__main__":
     data,target=Data_preprocessing("./Concrete_Data.xls")
 
-    #model = LinearRegressionHandWrite()
-    model= LassoHandWrite()
+    model = LinearRegressionHandWrite()
+    #model= LassoHandWrite()
     #model=RidgeHandWrite()
     Regression(model, data, target, splits=1, size=0.2)

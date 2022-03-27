@@ -176,7 +176,7 @@ def main(data_url):
     data,target=Data_preprocessing(data_url)
 
     mlp_handwriting=MLPHandWrite(network_struct=(data.shape[1],9,5,1))
-    Regression(mlp_handwriting,data,target,splits=5,size=0.2)
+    Regression(mlp_handwriting,data,target,splits=1,size=0.2)
 
 if __name__=='__main__':
     url="./Concrete_Data.xls"
