@@ -8,8 +8,8 @@ from MLPHandWrite import MLPHandWrite
 from LinearModelHandWrite import LinearRegressionHandWrite,LassoHandWrite,RidgeHandWrite
 from RandomForestHandWrite import myRandomForest
 from Data_preprocessing import Data_preprocessing
-from Regression import Regression
-
+from Regression import Regression,Draw
+#import numpy as np
 def main(data_url):
     data,target=Data_preprocessing(data_url)
 
@@ -57,7 +57,7 @@ def main(data_url):
         #参数为5折验证，测试集占20%
         print(names[i])
         Regression(models[i],data,target,splits=1,size=0.2,model_name=names[i])
-        mses.append(np.sqrt(mean_squared_error(target, models[i].predict(data))))
+        mses.append(mean_squared_error(target, models[i].predict(data)))
     Draw(names,mses)
 
 if __name__=='__main__':
