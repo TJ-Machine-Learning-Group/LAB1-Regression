@@ -1,21 +1,8 @@
 import numpy as np
-import matplotlib.pyplot as plt
-from numpy import *
+#from numpy import *
 from sklearn.model_selection import train_test_split as tt_split
-from sklearn.metrics import r2_score
-import pandas as pd
-from sklearn.model_selection import ShuffleSplit
-from sklearn.linear_model import LinearRegression, Lasso, Ridge
-from sklearn.tree import DecisionTreeRegressor
-from sklearn.ensemble import RandomForestRegressor
-from sklearn.neural_network import MLPRegressor
-from sklearn.preprocessing import StandardScaler
-from DecisionTreeRegressorHandWrite import *
-from sklearn.metrics import mean_squared_error
-
-import warnings 
-warnings.filterwarnings('ignore')
-
+#import warnings 
+#warnings.filterwarnings('ignore')
 
 # 计算方差
 class squaredError:
@@ -24,7 +11,7 @@ class squaredError:
     
     def value(self,dataSet):
         #print((dataSet[:,-1])*shape(dataSet)[0])
-        return np.var(dataSet[:,-1])*shape(dataSet)[0]
+        return np.var(dataSet[:,-1])*np.shape(dataSet)[0]
 
 # 计算绝对误差
 class absoluteError:
@@ -33,7 +20,7 @@ class absoluteError:
     
     def value(self,dataSet):
         M = np.mean(dataSet[:,-1])
-        mean= np.mat(ones((len(dataSet[:,-1]),1))*M)
+        mean= np.mat(np.ones((len(dataSet[:,-1]),1))*M)
         return np.sum(list(map(abs,list(dataSet[:,-1]-M))))
 
 from joblib import Parallel, delayed
@@ -70,7 +57,7 @@ class myRandomForest:
     # 根据特征边界划分样本
     def splitDataSet(self, dataSet,feature,value):
         dataSet = dataSet[dataSet[:,feature].argsort()]
-        for i in range(shape(dataSet)[0]):
+        for i in range(np.shape(dataSet)[0]):
             if dataSet[i][feature] == value and dataSet[i+1][feature] != value:
                 return dataSet[i+1:, :], dataSet[0:i+1, :]
     
@@ -80,25 +67,25 @@ class myRandomForest:
         feature_num=dataSet.shape[1]-1
         features=np.random.choice(feature_num,self.max_features,replace=False)
         # 最好分数
-        bestScore=inf;
+        bestScore=np.inf;
         # 最优特征
         bestfeature=0;
         # 最优特征的分割值
         bestValue=0;
         curScore=self.criterion.value(dataSet)
         # 判断样本数量是否足够
-        if shape(dataSet)[0] < self.min_samples_split or shape(dataSet)[0] < self.min_samples_leaf:
+        if np.shape(dataSet)[0] < self.min_samples_split or np.shape(dataSet)[0] < self.min_samples_leaf:
             return None,self.getMean(dataSet)
         for feature in features:
             dataSet = dataSet[dataSet[:,feature].argsort()]
             # 控制叶子节点数目
-            for index in range(shape(dataSet)[0]-1):
+            for index in range(np.shape(dataSet)[0]-1):
                 # 排除重复值
-                if index != shape(dataSet)[0]-1 and dataSet[index][feature] == dataSet[index+1][feature]:
+                if index != np.shape(dataSet)[0]-1 and dataSet[index][feature] == dataSet[index+1][feature]:
                     continue
                 data0 = dataSet[0:index+1, :]
                 data1 = dataSet[index+1:, :]
-                if shape(data0)[0] < self.min_samples_leaf or shape(data1)[0] < self.min_samples_leaf:
+                if np.shape(data0)[0] < self.min_samples_leaf or np.shape(data1)[0] < self.min_samples_leaf:
                     continue;
                 newS=self.criterion.value(data0)+self.criterion.value(data1)
                 if bestScore>newS:
@@ -139,7 +126,7 @@ class myRandomForest:
         return retTree
     
     # 初始化随机森林
-    def __init__(self, random_state, n_estimators, max_features, max_depth, min_change = 0.001,criterion="MSE",
+    def __init__(self, random_state=2, n_estimators=10, max_features=4, max_depth=12, min_change = 0.001,criterion="MSE",
                  min_samples_split = 0, min_samples_leaf = 0, sample_radio = 0.9, n_jobs = 10):
         self.trees = []
         self.random_state = random_state
@@ -192,7 +179,7 @@ class myRandomForest:
         self.cur_tree = seqtree;
         # print('第'+str(seqtree)+'棵树正在预测...\n')
         l=len(dataSet)
-        predict=np.mat(zeros((l,1)))
+        predict=np.mat(np.zeros((l,1)))
         for i in range(l):
             predict[i,0]=self.treeForecast(tree,dataSet[i,:])
          # print('第'+str(seqtree)+'棵树预测完成!')
@@ -206,124 +193,23 @@ class myRandomForest:
     def predict(self,X):
         self.cur_tree = 0;
         l=len(X)
-        predict=np.mat(zeros((l,1)))
+        predict=np.mat(np.zeros((l,1)))
         Parallel(n_jobs=self.n_jobs, backend="threading")(delayed(self.updatePredict)(predict, tree, X) for tree in self.trees)
     #     对多棵树预测的结果取平均
         predict/=self.n_estimators
+        predict =np.array(predict).reshape(-1,)
         return predict
     
     # 获取模型分数
-    def score(self, X, target):
-        return r2_score(target, self.predict(X))
+    def score(self, X, y):
+        predic=self.predict(X)
+        return 1 - ((y - predic)**2).sum() / ((y - y.mean())**2).sum()#R2
+        #return r2_score(y, self.predict(X))
 
-#回归函数
-def Regression(model,boston_data,boston_target,splits,size):
-   #n折交叉验证并打乱数据集顺序
-        shuffle = ShuffleSplit(n_splits=splits, test_size=size, random_state=7)
-        n_fold = 1
-        score_all = 0
-        X = boston_data
-        Y = boston_target
-        scores=[]
-        rmses = []
-        #训练测试循环
-        for train_indices, test_indices in shuffle.split(boston_data):
-            #获取此折的数据
-            x_train = X[train_indices]
-            y_train = Y[train_indices]
-            x_test = X[test_indices]
-            y_test = Y[test_indices]
-            #模型训练
-            model.fit(x_train,y_train)
-            #计算决定系数R^2
-            score = model.score(x_test, y_test)
-            scores.append(score)
-            
-            y_pred=model.predict(x_test)
-            rmses.append(np.sqrt(mean_squared_error(y_test, y_pred)))
-
-            print('fold {}/{},score(R^2)={}'.format(n_fold,splits,score))
-            score_all += score
-            n_fold += 1
-        # plt.plot(scores)
-        # for x,y in enumerate(scores):
-        #     plt.text(x, y, y, ha='center', va='bottom', fontsize=8)
-        # plt.show()
-        # y_pred=model.predict(X)
-        # y_pred=y_pred.reshape(1,y_pred.shape[0])
-        # print(y_pred.shape)
-        # Y=Y.reshape(1,Y.shape[0])
-        # print(Y.shape)
-
-        # plt.scatter(Y, y_pred.A)
-        # plt.plot([Y.min(), Y.max()], [Y.min(), Y.max()], 'k--', lw=2)
-        # plt.ylabel("Predicted")
-        # plt.xlabel("True")
-        # plt.title("Random Forest Regressor")
-        # plt.show()
-        # x = np.arange(5) 
-        # width = 0.3
-
-        # fig, ax = plt.subplots(figsize=(10,7))
-        # rects = ax.bar(x, rmses, width)
-        # ax.set_ylabel('RMSE')
-        # ax.set_xlabel('Models')
-        # ax.set_title('loss(MSE)')
-        # ax.set_xticks(x)
-        # #ax.set_xticklabels(names, rotation=45)
-        # for rect in rects:
-        #     height = rect.get_height()
-        #     ax.annotate('{:.2f}'.format(height), xy=(rect.get_x() + rect.get_width() / 2, height),
-        #                 xytext=(0, 3), textcoords="offset points", ha='center', va='bottom')
-        # fig.tight_layout()
-        # plt.show()
-        print("average score(R^2):",score_all/splits)
-
-def Data_preprocessing(data_url):
-    raw_df = pd.read_excel(data_url)
-    data = raw_df.values[:, :-1]
-    print("data of boston:",data.shape)
-    target = raw_df.values[:, -1]
-    print("target of boston:",target.shape)
-
-    sc = StandardScaler()
-    data = sc.fit_transform(data)#将自变量归一化为标准正态分布,对神经网络影响极大
-    return data,target
-
-def main(data_url):
-    data,target=Data_preprocessing(data_url)
-
-    #实例化sklearn回归模型
-    # Linear Regression
-    lr_skl = LinearRegression()
-    # Lasso Regression
-    lasso_skl = Lasso()
-    # Ridge Regression
-    ridge_skl = Ridge()
-
-    # Decision Trees
-    dtr_skl = DecisionTreeRegressor()
-    dtr_handwriting = DecisionTreeRegressorHandWrite()
-    # Random Forest Regressor
-    rfr_skl = RandomForestRegressor(n_estimators=100)
-    
-    # Multi-Layer Perceptron
-    #mlp_skl = MLPRegressor(hidden_layer_sizes=(5,5),max_iter=10000)
-    mlp_skl = MLPRegressor(hidden_layer_sizes=(100,70),max_iter=1800)
-
-    rfr_hw1 = myRandomForest(random_state=2, n_estimators=10, max_features=4, max_depth=12, min_change=0.001,min_samples_leaf=1, min_samples_split=2)
-
-    rfr_hw2 = myRandomForest(criterion="MAE", random_state=2, n_estimators=10, max_features=4, max_depth=12, min_change=0.001,min_samples_leaf=1, min_samples_split=2)
-    
-    models = [lr_skl, lasso_skl, ridge_skl, dtr_skl, dtr_handwriting, rfr_skl,mlp_skl,rfr_hw1,rfr_hw2]
-    names = ["Linear Regression from sklearn", "Lasso Regression from sklearn", "Ridge Regression from sklearn", 
-         "Decision Tree Regressor from sklearn", "Decision Tree Regressor writing by hand", "Random Forest Regressor from sklearn","Multi-Layer Perceptron Regressor from sklearn","Random Forest Regressor writing by hand(MSE)","Random Forest Regressor writing by hand(MAE)"]
-
-    for i in range(len(models)-2,len(models)):
-        #参数为5折验证，测试集占20%
-        print(names[i])
-        Regression(models[i],data,target,splits=5,size=0.2)
+from Data_preprocessing import Data_preprocessing
+from Regression import Regression
 
 if __name__=='__main__':
-    url="code/dataset/concrete/Concrete_Data.xls"
-    main(url)
+    data,target=Data_preprocessing("./Concrete_Data.xls")
+    model = myRandomForest()
+    Regression(model, data, target, splits=1, size=0.2)
