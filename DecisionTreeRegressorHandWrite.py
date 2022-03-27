@@ -103,7 +103,8 @@ class DecisionTreeRegressorHandWrite:
 
         return node
 
-    def fit(self, data: ndarray, label: ndarray, max_depth=12, min_samples_split=2):#ÑµÁ·
+    def fit(self, data: ndarray, label: ndarray, max_depth=12, min_samples_split=2):
+        self._init_()
         self.root.avg = label.mean()
         que = [(self.depth + 1, self.root, data, label)]
         while que:
