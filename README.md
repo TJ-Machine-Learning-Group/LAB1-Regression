@@ -9,4 +9,6 @@
 * pip install -r requirement.txt
 * python Concrete.py
 
-组员：高曾谊、程森、彭斐然、周珂帆
+组员：gzy/cs/pfr/zkf
+
+为防止隐私泄露掩盖了报告和PPT中所有组员的名字

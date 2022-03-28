@@ -56,7 +56,7 @@ def autolabel(rects,ax,labels):
 def Draw(names,height,title,labels = None):
     if labels is None:
         labels = copy.deepcopy(height)
-    elif len(height) == len(labels):
+    if len(height) == len(labels):
         x = np.arange(len(names)) 
         fig, ax = plt.subplots(figsize=(12,8))
         ax.set_ylabel(title)
