@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 from sklearn.model_selection import ShuffleSplit
 import copy
 #回归函数
-def Regression(model,boston_data,boston_target,splits,size,model_name="Mymodel"):
+def Regression(model,boston_data,boston_target,splits,size,model_name="Mymodel",isshow=False):
     #n折交叉验证并打乱数据集顺序
     shuffle = ShuffleSplit(n_splits=splits, test_size=size, random_state=7)
     n_fold = 1
@@ -22,18 +22,19 @@ def Regression(model,boston_data,boston_target,splits,size,model_name="Mymodel")
         #计算决定系数R^2
         score = model.score(x_test, y_test)
         #测试
-        #result = model.predict(x_test)
-        #plt.scatter(y_test, result)
-        #plt.plot([y_test.min(), y_test.max()], [y_test.min(), y_test.max()], 'k--', lw=2)
-        #plt.xlabel("Predicted")
-        #plt.ylabel("True")
-        #plt.title(model_name)
-        #plt.show()
-        #画图
-        #plt.plot(np.arange(len(result)), y_test,label='true value')
-        #plt.plot(np.arange(len(result)),result,label='predict value')
-        #plt.legend(loc='upper right')
-        #plt.show()
+        if isshow:
+            result = model.predict(x_test)
+            plt.scatter(y_test, result)
+            plt.plot([y_test.min(), y_test.max()], [y_test.min(), y_test.max()], 'k--', lw=2)
+            plt.xlabel("Predicted")
+            plt.ylabel("True")
+            plt.title(model_name)
+            plt.show()
+            #画图
+            plt.plot(np.arange(len(result)), y_test,label='true value')
+            plt.plot(np.arange(len(result)),result,label='predict value')
+            plt.legend(loc='upper right')
+            plt.show()
         
         print('fold {}/{},score(R^2)={}'.format(n_fold,splits,score))
         score_all += score

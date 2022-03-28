@@ -1,11 +1,9 @@
-
+import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
-
+from sklearn.decomposition import PCA
 data = pd.read_excel(r"Concrete_Data.xls")
-len(data)
-data.head()
 req_col_names = ["Cement", "BlastFurnaceSlag", "FlyAsh", "Water", "Superplasticizer",
                  "CoarseAggregate", "FineAggregate", "Age", "CC_Strength"]
 curr_col_names = list(data.columns)
@@ -18,13 +16,15 @@ data = data.rename(columns=mapper)
 data.head()
 data.isna().sum()
 data.describe()
-
 # pairwise relations
-sns.pairplot(data)
-plt.show()
+#sns.pairplot(newX)
+#plt.show()
 
 # Pearson Correlation coefficients heatmap
-corr = data.corr()
+X=data.values[:, :-1]
+pca=PCA(n_components=X.shape[1]-2)
+newX = pca.fit_transform(X)
+corr = np.corrcoef(newX.T)
 plt.figure(figsize=(9,7))
 sns.heatmap(corr, annot=True, cmap='Oranges')
 b, t = plt.ylim()
@@ -35,7 +35,6 @@ plt.show()
 
 # Observations
 
-data.columns
 # Observations from Strength vs (Cement, Age, Water)
 ax = sns.distplot(data.CC_Strength)
 ax.set_title("Compressive Strength Distribution")
