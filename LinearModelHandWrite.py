@@ -51,25 +51,27 @@ class LinearRegressionHandWrite(object):
         self.learning_rate = learning_rate
         #self.batch_size=batch_size
 
-    def fit(self, data, target):
+    def fit(self, data, target,isgrad=False):
         m,n=data.shape
         self.coef=rand_init(n+1)#要加上bias
         x_train=np.column_stack((np.ones(m),data))
-        fp=open("linear_loss_lg.txt","w",encoding="utf8")
-        #cur=0
-        for i in range(4000):  # 1000次迭代
-            grad = gradient(self.coef,x_train, target) 
-            #grad = gradient(self.coef,x_train[cur:cur+self.batch_size], target) 
-            #cur=cur+self.batch_size
-            #if cur>=m:
-            #    cur=0
-            fp.write(f"\n第{i}轮,loss={np.log10(cost_func(self.coef,x_train, target))}")
-            print(np.abs(grad.min()),np.abs(grad.max()))
-            #if max(np.abs(grad.min()),np.abs(grad.max()))<10:
-            #    break
-            self.coef = self.coef - self.learning_rate * grad
-        fp.close()
-        #self.coef = np.matmul(np.matmul(np.linalg.inv(np.matmul(x_train.T, x_train)), x_train.T), target)#最小二乘法
+        if isgrad:
+            #fp=open("linear_loss_lg.txt","w",encoding="utf8")
+            #cur=0
+            for i in range(400):  # 1000次迭代
+                grad = gradient(self.coef,x_train, target) 
+                #grad = gradient(self.coef,x_train[cur:cur+self.batch_size], target) 
+                #cur=cur+self.batch_size
+                #if cur>=m:
+                #    cur=0
+                #fp.write(f"\n第{i}轮,loss={np.log10(cost_func(self.coef,x_train, target))}")
+                #print(np.abs(grad.min()),np.abs(grad.max()))
+                #if max(np.abs(grad.min()),np.abs(grad.max()))<10:
+                #    break
+                self.coef = self.coef - self.learning_rate * grad
+            #fp.close()
+        else:
+            self.coef = np.matmul(np.matmul(np.linalg.inv(np.matmul(x_train.T, x_train)), x_train.T), target)#最小二乘法
 
     def score(self, data, target):
         m,n=data.shape
@@ -130,17 +132,19 @@ class RidgeHandWrite():
         self.learning_rate = learning_rate
         self.reg_const=reg_const
 
-    def fit(self, data, target):
+    def fit(self, data, target,isgrad=False):
         m,n=data.shape
-        #fp= open("ridge_loss.txt","w",encoding="utf8")
         self.coef=rand_init(n+1)#要加上bias
         x_train=np.column_stack((np.ones(m),data))
-        for i in range(400):  # 1000次迭代
-            grad = gradient(self.coef,x_train, target,reg_const=self.reg_const,L=2) 
-            self.coef = self.coef - self.learning_rate * grad
-            #fp.write(f"\n第{i}轮,loss={cost_func(self.coef,x_train, target,reg_const=self.reg_const,L=2)}")
-        #fp.close()
-        #self.coef = np.matmul(np.matmul(np.linalg.inv(np.matmul(data.T, data)+self.reg_const*np.eye(data.shape[1])), data.T), target)
+        if isgrad:
+            #fp= open("ridge_loss.txt","w",encoding="utf8")
+            for i in range(400):  # 1000次迭代
+                grad = gradient(self.coef,x_train, target,reg_const=self.reg_const,L=2) 
+                self.coef = self.coef - self.learning_rate * grad
+                #fp.write(f"\n第{i}轮,loss={cost_func(self.coef,x_train, target,reg_const=self.reg_const,L=2)}")
+            #fp.close()
+        else:
+            self.coef = np.matmul(np.matmul(np.linalg.inv(np.matmul(x_train.T, x_train)+self.reg_const*np.eye(x_train.shape[1])), x_train.T), target)
 
     def score(self, data, target):
         m,n=data.shape
@@ -169,15 +173,15 @@ class ElasticNetHandWrite():
 
     def fit(self, data, target):
         m,n=data.shape
-        fp= open("ElasticNetHandWrite_loss_0.01_0.01_0.01.txt","w",encoding="utf8")
+        #fp= open("ElasticNetHandWrite_loss_0.01_0.01_0.01.txt","w",encoding="utf8")
         self.coef=rand_init(n+1)#要加上bias
         x_train=np.column_stack((np.ones(m),data))
         for i in range(400):  # 1000次迭代
-            print(self.coef)
+            #print(self.coef)
             grad = gradient(self.coef,x_train, target,reg_const=self.reg_const1,reg_const2=self.reg_const2,L=3) 
             self.coef = self.coef - self.learning_rate * grad
-            fp.write(f"\n第{i}轮,loss={cost_func(self.coef,x_train, target,reg_const=self.reg_const1,reg_const2=self.reg_const2,L=3)}")
-        fp.close()
+            #fp.write(f"\n第{i}轮,loss={cost_func(self.coef,x_train, target,reg_const=self.reg_const1,reg_const2=self.reg_const2,L=3)}")
+        #fp.close()
 
     def score(self, data, target):
         m,n=data.shape
